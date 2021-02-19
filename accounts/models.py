@@ -19,13 +19,14 @@ class User(AbstractBaseUser, PermissionsMixin):
                                             default = Decimal('0.0000000000'),
                                             max_digits=18, 
                                             decimal_places=10,
-                                            
+                                            validators = [validators.MinValueValidator(0), validators.MaxValueValidator(1000000000)]
                                             )
     eth_wallet_address = models.CharField(_('eth wallet address'), max_length=42)
     eth_wallet_balance = models.DecimalField(_('eth wallet balance'), 
                                             default = Decimal('0.0000000000'),
                                             max_digits=18, 
                                             decimal_places=10,
+                                            validators = [validators.MinValueValidator(0), validators.MaxValueValidator(1000000000)]
                                             )
     max_amount_per_transaction = models.DecimalField(_('max amount per transaction'), 
                                             default = Decimal('10000'), 

@@ -2,8 +2,9 @@ from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
+from rest_framework.authtoken.views import ObtainAuthToken
 
-from .serializers import UserSerializer
+from .serializers import UserSerializer, UserLoginSerializer
 
 
 
@@ -19,10 +20,19 @@ class UserCreateView(APIView):
 
         if not user:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class UserLoginView(ObtainAuthToken):
+
+    def post(self, request, *args, **kwargs):
+        serializer = UserLoginSerializer(data=request.data)
+
+        if not serializer.is_valid():
+            return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
         
-        token = Token.objects.create(user=user)
-        json = serializer.data
-        json['token'] = token.key
-
-
-        return Response(json, status=status.HTTP_201_CREATED)
+        return Response({
+            "status" : "Logged in successfully",
+            "data" : serializer.data
+            }, status=status.HTTP_201_CREATED)

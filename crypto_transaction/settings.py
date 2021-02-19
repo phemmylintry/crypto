@@ -42,6 +42,7 @@ INSTALLED_APPS = [
 
     #apps
     'accounts',
+    'transactions',
 
     #third party apps
     'rest_framework',
