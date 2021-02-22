@@ -13,7 +13,7 @@ class Transaction(models.Model):
         ('failed', 'FAILED'),
     )
 
-    transaction_ref = models.CharField(max_length=255, default="demo1234")
+    transaction_ref = models.CharField(max_length=255, unique=True, default="demo12345")
     currency_amount = models.DecimalField(max_digits=18, decimal_places=10)
     currency_type = models.CharField(max_length=255, choices=CHOICES)
     source_user = models.ForeignKey('accounts.User', on_delete=models.CASCADE, related_name='source_user')

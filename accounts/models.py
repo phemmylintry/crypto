@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
-from django.core import validators
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils.translation import ugettext_lazy as _
 
 from .managers import UserManager
@@ -18,14 +18,14 @@ class User(AbstractBaseUser, PermissionsMixin):
                                             default = 0,
                                             max_digits=18, 
                                             decimal_places=10,
-                                            validators = [validators.MinValueValidator(0), validators.MaxValueValidator(1000000000)]
+                                            validators = [MinValueValidator(0), MaxValueValidator(1000000000)]
                                             )
     eth_wallet_address = models.CharField(_('eth wallet address'), max_length=42)
     eth_wallet_balance = models.DecimalField(_('eth wallet balance'), 
                                             default = 0,
                                             max_digits=18, 
                                             decimal_places=10,
-                                            validators = [validators.MinValueValidator(0), validators.MaxValueValidator(1000000000)]
+                                            validators = [MinValueValidator(0), MaxValueValidator(1000000000)]
                                             )
     max_amount_per_transaction = models.DecimalField(_('max amount per transaction'), 
                                             default = 10000, 

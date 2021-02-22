@@ -38,6 +38,9 @@ class TransactionSerializer(serializers.ModelSerializer):
         else:
             currency_balance = get_user.eth_wallet_balance
 
+        max_amount_per_transaction = get_user.max_amount_per_transaction
+        if currency_amount > max_amount_per_transaction:
+            raise serializers.ValidationError("You can't transfer above {}".format(max_amount_per_transaction))
 
         if currency_balance < currency_amount:
             raise serializers.ValidationError("You do not have enough balance to perform this transaction")
