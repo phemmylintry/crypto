@@ -5,31 +5,31 @@ from django.core import validators
 from django.utils.translation import ugettext_lazy as _
 
 from .managers import UserManager
-from decimal import Decimal
 # Create your models here.
 
 
 class User(AbstractBaseUser, PermissionsMixin):
 
-    name = models.CharField(_('name'), max_length=512)
+    fullname = models.CharField(_('name'), max_length=512)
+    # username = models.CharField(_('username'), max_length=255, unique=True, default='user1')
     description = models.CharField(_('description'), max_length=1000)
-    email = models.EmailField(_('email'), max_length=1000, unique=True)
+    email = models.EmailField(_('email'), unique=True)
     btc_wallet_address = models.CharField(_('btc wallet address'), max_length=35)
     btc_wallet_balance = models.DecimalField(_('btc wallet balance'),
-                                            default = Decimal('0.0000000000'),
+                                            default = 0,
                                             max_digits=18, 
                                             decimal_places=10,
                                             validators = [validators.MinValueValidator(0), validators.MaxValueValidator(1000000000)]
                                             )
     eth_wallet_address = models.CharField(_('eth wallet address'), max_length=42)
     eth_wallet_balance = models.DecimalField(_('eth wallet balance'), 
-                                            default = Decimal('0.0000000000'),
+                                            default = 0,
                                             max_digits=18, 
                                             decimal_places=10,
                                             validators = [validators.MinValueValidator(0), validators.MaxValueValidator(1000000000)]
                                             )
     max_amount_per_transaction = models.DecimalField(_('max amount per transaction'), 
-                                            default = Decimal('10000'), 
+                                            default = 10000, 
                                             max_digits=10, 
                                             decimal_places=2)
     is_active = models.BooleanField(_('active'), default=True)
@@ -38,11 +38,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['name']
+    REQUIRED_FIELDS = ('name', )
 
-    class Meta:
-        verbose_name = _('user')
-        verbose_name_plural = _('users')
+
+    # def __str__(self):
+    #     return self.fullname
 
 
 

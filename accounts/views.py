@@ -31,7 +31,7 @@ class UserLoginView(ObtainAuthToken):
 
         if not serializer.is_valid():
             return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
-        
+
         return Response({
             "status" : "Logged in successfully",
             "data" : serializer.data

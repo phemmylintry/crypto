@@ -1,7 +1,7 @@
 from django.urls import path, include
-# from .views import UserCreateView, UserLoginView
+from .views import TransactionView
 
 urlpatterns = [
-    # path('signup/', UserCreateView.as_view(), name='signup'),
+    path('submit-transaction/', TransactionView.as_view(), name='submit-transaction'),
     # path('login/', UserLoginView.as_view(), name='login')
 ]

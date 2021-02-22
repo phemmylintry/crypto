@@ -11,7 +11,7 @@ User = get_user_model()
 
 class UserSerializer(serializers.ModelSerializer):
 
-    name = serializers.CharField(required=True)
+    fullname = serializers.CharField(required=True)
     email = serializers.EmailField(required=True,
                                 validators = [validators.UniqueValidator(queryset=User.objects.all())])
     password = serializers.CharField(write_only=True, min_length=8)
@@ -21,7 +21,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('id', 
-                'name', 
+                'fullname', 
                 'password', 
                 'email', 
                 'btc_wallet_address',
@@ -61,7 +61,7 @@ class UserLoginSerializer(serializers.ModelSerializer):
 
         token, created = Token.objects.get_or_create(user=user)
         attrs['token'] = token.key
-
+        
         return attrs
 
 
