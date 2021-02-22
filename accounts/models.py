@@ -11,7 +11,6 @@ from .managers import UserManager
 class User(AbstractBaseUser, PermissionsMixin):
 
     fullname = models.CharField(_('name'), max_length=512)
-    # username = models.CharField(_('username'), max_length=255, unique=True, default='user1')
     description = models.CharField(_('description'), max_length=1000)
     email = models.EmailField(_('email'), unique=True)
     btc_wallet_address = models.CharField(_('btc wallet address'), max_length=35)
@@ -38,7 +37,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ('name', )
+    REQUIRED_FIELDS = ('fullname', )
 
 
     # def __str__(self):

@@ -7,6 +7,8 @@ from django.contrib.auth import get_user_model
 
 from .serializers import TransactionSerializer
 from .models import Transaction
+from .tasks import send_transaction
+
 import uuid
 
 User = get_user_model()
@@ -25,11 +27,13 @@ class TransactionView(generics.CreateAPIView):
 
         #generate randome key for transaction token
         transaction_ref = uuid.uuid4()
-        print(transaction_ref)
 
-        user = self.request.user
-        return serializer.save(source_user=user, 
-                            currency_type=currency_type, 
-                            target_user=get_target_user,
-                            transaction_ref=transaction_ref
-                        )
+        source_user = self.request.user
+
+        send_transaction.delay()
+
+        return serializer.save(source_user=source_user, 
+                        currency_type=currency_type, 
+                        target_user=get_target_user, 
+                        transaction_ref=transaction_ref)
+        

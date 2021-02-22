@@ -14,7 +14,7 @@ class Transaction(models.Model):
     )
 
     transaction_ref = models.CharField(max_length=255, default="demo1234")
-    currency_amount = models.DecimalField(max_digits=6, decimal_places=2)
+    currency_amount = models.DecimalField(max_digits=18, decimal_places=10)
     currency_type = models.CharField(max_length=255, choices=CHOICES)
     source_user = models.ForeignKey('accounts.User', on_delete=models.CASCADE, related_name='source_user')
     target_user = models.ForeignKey('accounts.User', on_delete=models.CASCADE, related_name='target_user')

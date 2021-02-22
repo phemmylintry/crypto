@@ -9,7 +9,7 @@ User = get_user_model()
 
 class TransactionSerializer(serializers.ModelSerializer):
 
-    currency_amount = serializers.DecimalField(required=True, max_digits=6, decimal_places=2)
+    currency_amount = serializers.DecimalField(required=True, max_digits=18, decimal_places=10)
     currency_type = serializers.ChoiceField(required=True, choices=Transaction.CHOICES)
     target_user = serializers.CharField(required=True, max_length=255)
     source_user = serializers.ReadOnlyField(source='source_user.email')
