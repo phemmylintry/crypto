@@ -23,14 +23,21 @@ class TransactionView(generics.CreateAPIView):
     def create(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
+        transaction = self.perform_create(serializer)
+        get_transaction_id = transaction['transaction_ref']
+        
+        transact = Transaction.objects.get(transaction_ref=get_transaction_id)
+        
+        transact.state = "obj"
+        transact.save(update_fields=['state'])
+
         headers = self.get_success_headers(serializer.data)
         return Response({
-                    'status' : "Transaction is processing.",
+                    'status' : "Transaction is successful.",
                     'data' : {
                         'transaction_ref' : serializer.data['transaction_ref']
-                        }
-                    }, status=status.HTTP_201_CREATED)
+                    }
+                }, status=status.HTTP_201_CREATED)
 
 
     def perform_create(self, serializer):
@@ -40,7 +47,7 @@ class TransactionView(generics.CreateAPIView):
         get_target_user = User.objects.get(id=target_user)
         serializer.validated_data['target_user'] = get_target_user
 
-        #generate randome key for transaction token
+        #generate randome id for transaction token
         transaction_ref = uuid.uuid4()
         serializer.validated_data['transaction_ref'] = transaction_ref
 
@@ -54,4 +61,6 @@ class TransactionView(generics.CreateAPIView):
         currency_type = serializer.data['currency_type']
         transfer_amount = serializer.data['currency_amount']
 
-        send_transaction.delay(source_user, target_user, currency_type, transfer_amount)
+        task = send_transaction.delay(source_user, target_user, currency_type, transfer_amount)
+
+        return serializer.data

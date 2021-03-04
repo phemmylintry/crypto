@@ -1,5 +1,6 @@
 from celery import shared_task
 from django.contrib.auth import get_user_model
+from .models import Transaction
 from decimal import Decimal
 
 User = get_user_model()
@@ -37,3 +38,10 @@ def send_transaction(source_user, target_user, currency_type, transfer_amount):
         message = "failed"
 
     return message
+
+
+# @shared_task(serializer='json')
+# def update_transaction_status(transaction_status, transaction_ref):
+#     get_transaction_status=Transaction.objects.get(transaction_ref=transaction_ref)
+
+#     return "seen"

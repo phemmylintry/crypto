@@ -33,6 +33,13 @@ class UserSerializer(serializers.ModelSerializer):
         return user
 
 
+class AccountBalanceSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = ('id', 'btc_wallet_balance', 'eth_wallet_balance')
+
+
 class UserLoginSerializer(serializers.ModelSerializer):
 
     email = serializers.EmailField(required=True, write_only=True)
