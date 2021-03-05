@@ -11,7 +11,6 @@ from django.contrib.auth import get_user_model
 from django.http import Http404
 
 from .serializers import UserSerializer, UserLoginSerializer, AccountBalanceSerializer
-from accounts.permissions import IsOwnerOrReadOnly
 
 User = get_user_model()
 
@@ -36,6 +35,9 @@ class UserCreateView(APIView):
 
 class UserDetailView(APIView):
 
+    permission_classes = (IsAuthenticated, )
+    authenctication_classes = (TokenAuthentication, )
+
     def get_object(self, pk):
         try:
             return User.objects.get(pk=pk)
@@ -50,15 +52,17 @@ class UserDetailView(APIView):
 
 class AccountBalanceView(APIView):
 
-    def get_object(self, pk):
-        try:
-            return User.objects.get(pk=pk)
-        except User.DoesNotExist:
-            raise Http404
+    permission_classes = [IsAuthenticated]
+    authenctication_classes = (TokenAuthentication, )
 
-    def get(self, request, pk, format='json'):
-        user = self.get_object(pk)
-        serializer = AccountBalanceSerializer(user)
+
+    def get(self, request, format='json'):
+
+        user = request.user.id
+        account_balance = User.objects.get(id=user)
+        
+        serializer = AccountBalanceSerializer(account_balance)
+
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 

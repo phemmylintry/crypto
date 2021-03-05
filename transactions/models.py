@@ -23,4 +23,4 @@ class Transaction(models.Model):
     state = models.CharField(max_length=255, choices=STATES, default="processing")
     
     def __str__(self):
-        return ("Transaction of {} made by {} on: {}".format(currency_amount, source_user, timestamp_created))
+        return self.transaction_ref

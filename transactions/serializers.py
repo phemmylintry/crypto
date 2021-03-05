@@ -51,3 +51,15 @@ class TransactionSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("The account you're sending too is not a valid user")
     
         return attrs
+
+
+class TransactionListSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Transaction
+        fields = ('id',
+                'state',
+                'currency_amount',
+                'currency_type',
+                'source_user_id',
+                'target_user_id')

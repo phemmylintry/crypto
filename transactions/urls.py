@@ -1,7 +1,7 @@
 from django.urls import path, include
-from .views import TransactionView
+from . import views
 
 urlpatterns = [
-    path('submit-transaction/', TransactionView.as_view(), name='submit-transaction'),
-    # path('login/', UserLoginView.as_view(), name='login')
+    path('submit-transaction/', views.TransactionView.as_view(), name='submit-transaction'),
+    path('transaction-list/', views.TransactionListView.as_view(), name='transaction-list'),
 ]

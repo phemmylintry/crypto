@@ -1,12 +1,14 @@
 from rest_framework import status
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework import generics
 from rest_framework.authentication import TokenAuthentication
+
 from django.contrib.auth import get_user_model
 
 
-from .serializers import TransactionSerializer
+from .serializers import TransactionSerializer, TransactionListSerializer
 from .models import Transaction
 from .tasks import send_transaction
 
@@ -18,20 +20,22 @@ class TransactionView(generics.CreateAPIView):
 
     queryset = Transaction.objects.all()
     serializer_class = TransactionSerializer
+    permission_classes = (IsAuthenticated, )
     authenctication_classes = (TokenAuthentication, )
 
     def create(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)
         transaction = self.perform_create(serializer)
+        
+        #update transaction state :(
         get_transaction_id = transaction['transaction_ref']
-        
         transact = Transaction.objects.get(transaction_ref=get_transaction_id)
-        
-        transact.state = "obj"
+        transact.state = "success"
         transact.save(update_fields=['state'])
 
         headers = self.get_success_headers(serializer.data)
+        
         return Response({
                     'status' : "Transaction is successful.",
                     'data' : {
@@ -41,8 +45,9 @@ class TransactionView(generics.CreateAPIView):
 
 
     def perform_create(self, serializer):
-        currency_type = serializer.validated_data['currency_type']
 
+
+        currency_type = serializer.validated_data['currency_type']
         target_user = serializer.validated_data['target_user']
         get_target_user = User.objects.get(id=target_user)
         serializer.validated_data['target_user'] = get_target_user
@@ -64,3 +69,49 @@ class TransactionView(generics.CreateAPIView):
         task = send_transaction.delay(source_user, target_user, currency_type, transfer_amount)
 
         return serializer.data
+
+
+
+class TransactionListView(APIView):
+
+    permission_classes = (IsAuthenticated, )
+    authenctication_classes = (TokenAuthentication, )
+
+    def get(self, request, format='json'):
+
+        user = request.user.id
+        
+        if not user:
+            return Response({
+                "status" : "Error",
+                "data" : {
+                    "message" : "Invalid user"
+                }
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        transactions = Transaction.objects.all()
+
+        data = []
+
+        for items in transactions:
+            
+            if items.source_user_id == user or items.target_user_id == user:
+            
+                data.append({
+                    'id' : items.id,
+                    'state' : items.state,
+                    'currency_amount' : items.currency_amount,
+                    'currency_type' : items.currency_type,
+                    'source_user_id' : items.source_user_id,
+                    'target_user_id' : items.target_user_id
+                })
+
+        
+        if data == []:
+            return Response(
+                {
+                    "data" : "No transaction history"
+                }, status=status.HTTP_200_OK)
+        
+        return Response(data, status=status.HTTP_200_OK)
+        
