@@ -1,0 +1,178 @@
+openapi: 3.0.3
+info:
+  title: ''
+  version: 0.0.0
+paths:
+  /accounts/account-balance/:
+    get:
+      operationId: accounts_account_balance_retrieve
+      description: ''
+      tags:
+      - accounts
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          description: No response body
+  /accounts/login/:
+    post:
+      operationId: accounts_login_create
+      description: ''
+      tags:
+      - accounts
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AuthToken'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AuthToken'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthToken'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthToken'
+          description: ''
+  /accounts/signup/:
+    post:
+      operationId: accounts_signup_create
+      description: ''
+      tags:
+      - accounts
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /accounts/user-detail/{id}/:
+    get:
+      operationId: accounts_user_detail_retrieve
+      description: ''
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - accounts
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          description: No response body
+  /transactions/submit-transaction/:
+    post:
+      operationId: transactions_submit_transaction_create
+      description: ''
+      tags:
+      - transactions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Transaction'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Transaction'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Transaction'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transaction'
+          description: ''
+  /transactions/transaction-list/:
+    get:
+      operationId: transactions_transaction_list_retrieve
+      description: ''
+      tags:
+      - transactions
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          description: No response body
+components:
+  schemas:
+    AuthToken:
+      type: object
+      properties:
+        username:
+          type: string
+          writeOnly: true
+        password:
+          type: string
+          writeOnly: true
+        token:
+          type: string
+          readOnly: true
+      required:
+      - password
+      - token
+      - username
+    CurrencyTypeEnum:
+      enum:
+      - btc
+      - eth
+      type: string
+    StateEnum:
+      enum:
+      - processing
+      - success
+      - failed
+      type: string
+    Transaction:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        currency_amount:
+          type: string
+          format: decimal
+          maximum: 100000000
+          minimum: -100000000
+        currency_type:
+          $ref: '#/components/schemas/CurrencyTypeEnum'
+        source_user:
+          type: string
+          format: email
+          readOnly: true
+        target_user:
+          type: string
+          maxLength: 255
+        state:
+          $ref: '#/components/schemas/StateEnum'
+        transaction_ref:
+          type: string
+          readOnly: true
+          maxLength: 255
+      required:
+      - currency_amount
+      - currency_type
+      - id
+      - source_user
+      - target_user
+      - transaction_ref
+  securitySchemes:
+    tokenAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Token-based authentication with required prefix "Token"

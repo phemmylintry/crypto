@@ -7,6 +7,8 @@ from rest_framework.authentication import TokenAuthentication
 
 from django.contrib.auth import get_user_model
 
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample
+from drf_spectacular.types import OpenApiTypes
 
 from .serializers import TransactionSerializer, TransactionListSerializer
 from .models import Transaction
@@ -23,6 +25,10 @@ class TransactionView(generics.CreateAPIView):
     permission_classes = (IsAuthenticated, )
     authenctication_classes = (TokenAuthentication, )
 
+    @extend_schema(
+        request=TransactionSerializer,
+        responses={201: TransactionSerializer},
+    )
     def create(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)
@@ -77,6 +83,10 @@ class TransactionListView(APIView):
     permission_classes = (IsAuthenticated, )
     authenctication_classes = (TokenAuthentication, )
 
+    @extend_schema(
+        request=TransactionListSerializer,
+        responses={201: TransactionListSerializer},
+    )
     def get(self, request, format='json'):
 
         user = request.user.id

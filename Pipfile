@@ -10,6 +10,7 @@ djangorestframework = "*"
 python-dotenv = "*"
 mysqlclient = "*"
 sqlalchemy = "*"
+drf-spectacular = "*"
 
 [dev-packages]
 
