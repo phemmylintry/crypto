@@ -97,28 +97,28 @@ WSGI_APPLICATION = 'crypto_transaction.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-
-
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'crypto',
-#         'HOST': 'localhost',
-#         'PASSWORD': 'password',
-#         'PORT': '3306',
-#         'USER': 'root',
-#         ' OPTIONS ' :  { 
-#             ' charset ' :  ' Utf8mb4 ' , 
-#             ' sql_mode ' :  ' TRADITIONAL, NO_AUTO_VALUE_ON_ZERO, ONLY_FULL_GROUP_BY ' ,
-#         }, 
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
+
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'crypto',
+        'HOST': 'localhost',
+        'PASSWORD': 'password',
+        'PORT': '3306',
+        'USER': 'root',
+        ' OPTIONS ' :  { 
+            ' charset ' :  ' Utf8mb4 ' , 
+            ' sql_mode ' :  ' TRADITIONAL, NO_AUTO_VALUE_ON_ZERO, ONLY_FULL_GROUP_BY ' ,
+        }, 
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -158,8 +158,9 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-CELERY_BROKER_URL = 'amqp://admin:mypass@broker:5672'
-# CELERY_BROKER_URL = 'amqp://localhost'
+CELERY_BROKER_URL = os.getenv("CLOUDAMQP_URL")
+BROKER_POOL_LIMIT = 1
+CELERY_TASK_RESULT_EXPIRES = 14400
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_RESULT_BACKEND = 'db+sqlite:///results.sqlite'

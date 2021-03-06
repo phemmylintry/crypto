@@ -11,6 +11,8 @@ python-dotenv = "*"
 sqlalchemy = "*"
 drf-spectacular = "*"
 gunicorn = "*"
+django-heroku = "*"
+mysqlclient = "*"
 
 [dev-packages]
 

@@ -29,13 +29,22 @@ class TransactionView(generics.CreateAPIView):
         request=TransactionSerializer,
         responses={201: TransactionSerializer},
     )
+
     def create(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)
         transaction = self.perform_create(serializer)
         
+        if transaction.lower() == "failed":
+            return Response ({
+                'status' : "Tansaction not succesful",
+                'data' : {
+                    'transaction_ref' : serializer.data['transaction_ref']
+                }
+            })
+        
         #update transaction state :(
-        get_transaction_id = transaction['transaction_ref']
+        get_transaction_id = serializer.data['transaction_ref']
         transact = Transaction.objects.get(transaction_ref=get_transaction_id)
         transact.state = "success"
         transact.save(update_fields=['state'])
@@ -72,9 +81,11 @@ class TransactionView(generics.CreateAPIView):
         currency_type = serializer.data['currency_type']
         transfer_amount = serializer.data['currency_amount']
 
-        task = send_transaction.delay(source_user, target_user, currency_type, transfer_amount)
-
-        return serializer.data
+        task = send_transaction.apply_async((source_user, target_user, currency_type, transfer_amount), countdown=2)
+        
+        result = task.get()
+        
+        return result
 
 
 
