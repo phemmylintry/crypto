@@ -13,6 +13,7 @@ drf-spectacular = "*"
 gunicorn = "*"
 django-heroku = "*"
 mysqlclient = "*"
+redis = "*"
 
 [dev-packages]
 

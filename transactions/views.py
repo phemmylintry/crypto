@@ -34,8 +34,13 @@ class TransactionView(generics.CreateAPIView):
         serializer = self.serializer_class(data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)
         transaction = self.perform_create(serializer)
-        
-        if transaction.lower() == "failed":
+
+        if transaction == "success":
+            get_transaction_id = serializer.data['transaction_ref']
+            transact = Transaction.objects.get(transaction_ref=get_transaction_id)
+            transact.state = "success"
+            transact.save(update_fields=['state'])
+        else:
             return Response ({
                 'status' : "Tansaction not succesful",
                 'data' : {
@@ -44,11 +49,6 @@ class TransactionView(generics.CreateAPIView):
             })
         
         #update transaction state :(
-        get_transaction_id = serializer.data['transaction_ref']
-        transact = Transaction.objects.get(transaction_ref=get_transaction_id)
-        transact.state = "success"
-        transact.save(update_fields=['state'])
-
         headers = self.get_success_headers(serializer.data)
         
         return Response({
@@ -81,10 +81,9 @@ class TransactionView(generics.CreateAPIView):
         currency_type = serializer.data['currency_type']
         transfer_amount = serializer.data['currency_amount']
 
-        task = send_transaction.apply_async((source_user, target_user, currency_type, transfer_amount), countdown=2)
+        task = send_transaction.delay(source_user, target_user, currency_type, transfer_amount)
         
         result = task.get()
-        
         return result
 
 
@@ -119,12 +118,12 @@ class TransactionListView(APIView):
             if items.source_user_id == user or items.target_user_id == user:
             
                 data.append({
-                    'id' : items.id,
-                    'state' : items.state,
+                    'transaction_ref' : items.transaction_ref,
                     'currency_amount' : items.currency_amount,
                     'currency_type' : items.currency_type,
                     'source_user_id' : items.source_user_id,
-                    'target_user_id' : items.target_user_id
+                    'target_user_id' : items.target_user_id,
+                    'state' : items.state,
                 })
 
         
