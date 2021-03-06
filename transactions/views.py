@@ -81,7 +81,7 @@ class TransactionView(generics.CreateAPIView):
         currency_type = serializer.data['currency_type']
         transfer_amount = serializer.data['currency_amount']
 
-        task = send_transaction.delay(source_user, target_user, currency_type, transfer_amount)
+        task = send_transaction.apply_async((source_user, target_user, currency_type, transfer_amount), countdown=2)
         
         result = task.get()
         return result
