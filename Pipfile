@@ -8,9 +8,9 @@ django = "*"
 celery = "*"
 djangorestframework = "*"
 python-dotenv = "*"
-mysqlclient = "*"
 sqlalchemy = "*"
 drf-spectacular = "*"
+gunicorn = "*"
 
 [dev-packages]
 
