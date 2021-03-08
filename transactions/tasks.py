@@ -5,7 +5,7 @@ from decimal import Decimal
 
 User = get_user_model()
 
-@shared_task(serializer='json')
+# @shared_task(serializer='json')
 def send_transaction(source_user, target_user, currency_type, transfer_amount):
 
     try:

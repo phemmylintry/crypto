@@ -21,4 +21,3 @@ RUN python -m pip install -r requirements.txt
 
 COPY . ./
 CMD gunicorn crypto_transaction.wsgi --log-file -
-RUN python manage.py makemigrations && python manage.py migrate

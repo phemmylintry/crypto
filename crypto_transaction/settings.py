@@ -11,8 +11,9 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 import os
 from pathlib import Path
+
 from dotenv import load_dotenv
-# import django_heroku
+import django_heroku
 
 load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -49,6 +50,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'drf_spectacular',
+    'django_q',
 ]
 
 MIDDLEWARE = [
@@ -167,4 +169,15 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_RESULT_BACKEND = 'db+sqlite:///results.sqlite'
 
-# django_heroku.settings(locals())
+
+
+Q_CLUSTER = {
+    'name': 'crypto_transaction',
+    'retry': 5,
+    'workers': 8,
+    'recycle': 500,
+    'redis': 'redis://:pd62be2f4dc0af0a540a7e19d528bffe3d20d37e1cc8854488f47efcc9b2e8fc7@ec2-18-204-153-155.compute-1.amazonaws.com:11149',
+}
+
+
+django_heroku.settings(locals())

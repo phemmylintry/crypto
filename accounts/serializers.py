@@ -61,7 +61,7 @@ class UserLoginSerializer(serializers.ModelSerializer):
         user = authenticate(email=email, password=password)
 
         if not user:
-            raise serializers.ValidationError("User does not exist")
+            raise serializers.ValidationError("Wrong email or password")
 
         if not user.is_active:
             raise serializers.ValidationError("User is not active, Please contact administrator")

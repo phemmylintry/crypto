@@ -7,6 +7,8 @@ from rest_framework.authentication import TokenAuthentication
 
 from django.contrib.auth import get_user_model
 
+from django_q.tasks import async_task, result
+
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample
 from drf_spectacular.types import OpenApiTypes
 
@@ -81,10 +83,10 @@ class TransactionView(generics.CreateAPIView):
         currency_type = serializer.data['currency_type']
         transfer_amount = serializer.data['currency_amount']
 
-        task = send_transaction.apply_async((source_user, target_user, currency_type, transfer_amount), countdown=2)
-        
-        result = task.get()
-        return result
+        task = async_task('transactions.tasks.send_transaction', source_user, target_user, currency_type, transfer_amount)
+        # task = send_transaction.apply_async((source_user, target_user, currency_type, transfer_amount), countdown=2)
+        results = result(task, 200)
+        return results
 
 
 
@@ -124,6 +126,7 @@ class TransactionListView(APIView):
                     'source_user_id' : items.source_user_id,
                     'target_user_id' : items.target_user_id,
                     'state' : items.state,
+                    'time_of_transaction': items.timestamp_created
                 })
 
         

@@ -12,6 +12,8 @@ SQLAlchemy = "*"
 drf-spectacular = "*"
 gunicorn = "*"
 redis = "*"
+django-q = "*"
+django-heroku = "*"
 
 [dev-packages]
 
