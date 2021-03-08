@@ -21,4 +21,4 @@ RUN python -m pip install -r requirements.txt
 
 
 COPY . ./
-CMD gunicorn --bind 0.0.0.0:8000 crypto_transaction.wsgi
+CMD gunicorn crypto_transaction.wsgi --log-file -
