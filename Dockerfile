@@ -21,4 +21,4 @@ RUN python -m pip install -r requirements.txt
 
 
 COPY . ./
-EXPOSE 8000 
+CMD gunicorn crypto_transaction.wsgi --log-file -
