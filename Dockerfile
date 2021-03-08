@@ -18,7 +18,7 @@ WORKDIR /app/api
 # RUN PIPENV_VENV_IN_PROJECT=1 pipenv install --deploy
 ADD requirements.txt .
 RUN python -m pip install -r requirements.txt
-
+RUN python manage.py makemigrations && python manage.py migrate
 
 COPY . ./
 CMD gunicorn crypto_transaction.wsgi --log-file -
