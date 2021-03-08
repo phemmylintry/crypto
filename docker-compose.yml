@@ -1,0 +1,34 @@
+version: '3.4'
+
+services: 
+    crypto:
+        restart: always
+        container_name: crypto
+        image: femosocratis/crypto
+        command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000" 
+        build: 
+            context: .
+            dockerfile: Dockerfile
+        ports: 
+            - "8000:8000"
+
+
+    broker:
+        image: femosocratis/rabbitmq:latest
+        hostname: broker
+        environment: 
+          - RABBITMQ_DEFAULT_USER=admin
+          - RABBITMQ_DEFAULT_PASS=mypass
+        ports:
+          - "5672:5672"
+
+
+    worker:
+        restart: "no"
+        image: femosocratis/celery_worker
+        command: celery -A crypto_transaction worker -l INFO
+        volumes: 
+            - .:/code
+        depends_on: 
+            - crypto
+            - broker

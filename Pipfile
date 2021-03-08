@@ -4,15 +4,13 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-django = "*"
+Django = "*"
 celery = "*"
 djangorestframework = "*"
 python-dotenv = "*"
-sqlalchemy = "*"
+SQLAlchemy = "*"
 drf-spectacular = "*"
 gunicorn = "*"
-django-heroku = "*"
-mysqlclient = "*"
 redis = "*"
 
 [dev-packages]

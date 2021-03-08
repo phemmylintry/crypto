@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.authtoken.models import Token
 from rest_framework.authentication import TokenAuthentication
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser 
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.authtoken.views import ObtainAuthToken
@@ -14,6 +14,7 @@ from django.contrib.auth import get_user_model
 from django.http import Http404
 
 from .serializers import UserSerializer, UserLoginSerializer, AccountBalanceSerializer
+from .permissions import IsAdmin
 
 User = get_user_model()
 
@@ -103,3 +104,13 @@ class UserLoginView(ObtainAuthToken):
             "status" : "Logged in successfully",
             "data" : serializer.data
             }, status=status.HTTP_201_CREATED)
+
+
+
+class UserList(generics.ListAPIView):
+
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated, IsAdminUser]
+    authenctication_classes = (TokenAuthentication, )
+
