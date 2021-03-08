@@ -4,7 +4,7 @@ services:
     crypto:
         restart: always
         container_name: crypto
-        image: femosocratis/crypto
+        image: crypto
         command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000" 
         build: 
             context: .
@@ -25,7 +25,7 @@ services:
 
     worker:
         restart: "no"
-        image: femosocratis/celery_worker
+        image: celery_worker
         command: celery -A crypto_transaction worker -l INFO
         volumes: 
             - .:/code
