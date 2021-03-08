@@ -21,4 +21,4 @@ RUN python -m pip install -r requirements.txt
 
 
 COPY . ./
-CMD docker-compose up --build
+CMD gunicorn crypto_transaction.wsgi --log-file -
