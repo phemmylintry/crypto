@@ -86,6 +86,7 @@ class TransactionView(generics.CreateAPIView):
         task = async_task('transactions.tasks.send_transaction', source_user, target_user, currency_type, transfer_amount)
         # task = send_transaction.apply_async((source_user, target_user, currency_type, transfer_amount), countdown=2)
         results = result(task, 200)
+        print(results)
         return results
 
 
