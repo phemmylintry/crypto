@@ -1,4 +1,4 @@
-FROM python:3.8-slim-buster
+FROM femosocratis/crypto:latest
 
 ENV PYTHONUNBUFFERED 1
 
@@ -21,4 +21,4 @@ RUN python -m pip install -r requirements.txt
 
 
 COPY . ./
-CMD gunicorn crypto_transaction.wsgi --log-file -
+EXPOSE 8000 

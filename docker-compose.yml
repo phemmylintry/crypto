@@ -14,7 +14,7 @@ services:
 
 
     broker:
-        image: femosocratis/rabbitmq:latest
+        image: rabbitmq:latest
         hostname: broker
         environment: 
           - RABBITMQ_DEFAULT_USER=admin
