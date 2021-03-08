@@ -1,4 +1,4 @@
-FROM femosocratis/crypto:latest
+FROM python:3.8-slim-buster
 
 ENV PYTHONUNBUFFERED 1
 
