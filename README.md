@@ -1,4 +1,4 @@
-## A Micro-service that serves as a crypto platform
+## A Crypto Wallet MicroService
 
 # Description:
 It was built using [Django-Rest Framework](https://www.django-rest-framework.org/) and a Docker file was included for easy development. 
