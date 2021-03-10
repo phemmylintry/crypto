@@ -38,3 +38,16 @@ Please always follow the right format in making pull request
 
 # Author:
 Oluwafemi Adenuga (phemmylintry)
+
+
+# Login Credentials
+
+```
+{
+  "email": "admin@crypto.com",
+  "password": "admin"
+}
+
+```
+
+
